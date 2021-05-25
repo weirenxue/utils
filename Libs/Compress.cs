@@ -46,13 +46,13 @@ namespace Utils.Libs
             // 每個資料夾一個壓縮檔
             Parallel.ForEach(di.GetDirectories(), parallelOptions, (item) =>
             {
-                ZipDir(item.FullName, options.DestinationDir, password: options.Password);
+                Zip(item.FullName, options.DestinationDir, password: options.Password);
                 Common.WriteLog($"{item.FullName}\n");
             });
             // 每個檔案一個壓縮檔
             Parallel.ForEach(di.GetFiles(), parallelOptions, (item) =>
             {
-                ZipDir(item.FullName, options.DestinationDir, password: options.Password, dir: false);
+                Zip(item.FullName, options.DestinationDir, password: options.Password, dir: false);
                 Common.WriteLog($"{item.FullName}\n");
             });
 
@@ -73,12 +73,13 @@ namespace Utils.Libs
             }
             directoryInfo.Create();
         }
-        public static void ZipDir(string sourcePath, string destinationPath, string password = null, bool dir = true)
+        public static void Zip(string sourcePath, string destinationPath, string password = null, bool dir = true)
         {
             using (ZipFile zip = new ZipFile())
             {
                 zip.AlternateEncodingUsage = ZipOption.Always;
                 zip.AlternateEncoding = Encoding.UTF8;
+                zip.CompressionLevel = Ionic.Zlib.CompressionLevel.None;
 
                 if (!String.IsNullOrEmpty(password))
                 {
