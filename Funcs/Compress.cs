@@ -4,8 +4,9 @@ using System;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using Utils.Libs;
 
-namespace Utils.Libs
+namespace Utils.Funcs
 {
     class Compress
     {
@@ -81,7 +82,7 @@ namespace Utils.Libs
                 zip.AlternateEncoding = Encoding.UTF8;
                 zip.CompressionLevel = Ionic.Zlib.CompressionLevel.None;
 
-                if (!String.IsNullOrEmpty(password))
+                if (!string.IsNullOrEmpty(password))
                 {
                     zip.Password = password;
                 }

@@ -186,15 +186,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Libs\Common.cs" />
-    <Compile Include="Libs\Compress.cs" />
-    <Compile Include="Libs\Hash.cs" />
+    <Compile Include="Funcs\Compress.cs" />
+    <Compile Include="Funcs\Hash.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="ClassDiagram1.cd" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Fody.6.5.1\build\Fody.targets" Condition="Exists('..\packages\Fody.6.5.1\build\Fody.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

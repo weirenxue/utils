@@ -5,8 +5,9 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
+using Utils.Libs;
 
-namespace Utils.Libs
+namespace Utils.Funcs
 {
     class Hash
     {

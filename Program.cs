@@ -1,6 +1,5 @@
 ﻿using CommandLine;
-using System;
-using Utils.Libs;
+using Utils.Funcs;
 
 namespace Utils
 {
