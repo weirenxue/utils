@@ -1,5 +1,8 @@
 ﻿using CommandLine;
+using Newtonsoft.Json;
 using System;
+using System.IO;
+using System.Text;
 
 namespace Utils.Libs
 {
@@ -12,6 +15,15 @@ namespace Utils.Libs
                 Console.Write("{0} {1}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"), log);
             else
                 Console.Write("{0}", log);
+        }
+        public static void OutFileJson(object obj, string 路徑加檔名)
+        {
+            string json = JsonConvert.SerializeObject(obj, Formatting.Indented);
+            //string json = JsonConvert.SerializeObject(obj);
+            using (StreamWriter sw = new StreamWriter(路徑加檔名, false, Encoding.UTF8))
+            {
+                sw.Write(json);
+            }
         }
         public class BasicOptions
         {
