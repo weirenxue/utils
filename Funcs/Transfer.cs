@@ -17,6 +17,10 @@ namespace Utils.Funcs
         {
             [Option('h', "host", Required = true, HelpText = "Url，例如 ftp://127.0.0.1。")]
             public string Host { set; get; }
+            [Option('u', "username", Required = true, HelpText = "使用者名稱。")]
+            public string Username { set; get; }
+            [Option('p', "password", Required = true, HelpText = "使用者密碼。")]
+            public string Password { set; get; }
             [Option('d', "directory", Required = true, HelpText = "zip 檔案所在位置，為絕對路徑。")]
             public string Directory { set; get; }
             [Option("connection", Required = false, HelpText = "ftp 最大連線數。")]
@@ -39,36 +43,36 @@ namespace Utils.Funcs
             {
                 Parallel.ForEach(fis, new ParallelOptions { MaxDegreeOfParallelism = options.coreNum }, fi =>
                 {
+                    if (傳輸連線數.Connection >= options.Connection)
+                        return;
+                    if (!fi.Extension.Equals(".zip"))
+                        return;
+                    if (傳輸資訊Buffer.IsExist(fi.FullName))
+                        return;
+                    Thread t = new Thread(new ThreadStart(() =>
+                    {
+                        using (WebClient client = new WebClient())
+                        {
+                            傳輸資訊 傳輸資訊 = new 傳輸資訊()
+                            {
+                                Filename = fi.FullName,
+                                StartTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")
+                            };
+                            lock (傳輸資訊Buffer)
+                            {
+                                傳輸資訊Buffer.Add(傳輸資訊, fi.FullName);
+                            }
+                            Common.WriteLog($"{fi.FullName}\n");
+                            client.Credentials = new NetworkCredential(options.Username, options.Password);
+                            client.UploadFile(Path.Combine(options.Host, fi.Name).Replace("\\", "/"), WebRequestMethods.Ftp.UploadFile, fi.FullName);
+                            lock (傳輸連線數)
+                                傳輸連線數.Connection -= 1;
+                            傳輸資訊.EndTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
+                        }
+                    }));
+                    t.Start();
                     lock (傳輸連線數)
                     {
-                        if (傳輸連線數.Connection >= options.Connection)
-                            return;
-                        if (!fi.Extension.Equals(".zip"))
-                            return;
-                        if (傳輸資訊Buffer.IsExist(fi.FullName))
-                            return;
-                        Thread t = new Thread(new ThreadStart(() =>
-                        {
-                            using (WebClient client = new WebClient())
-                            {
-                                傳輸資訊 傳輸資訊 = new 傳輸資訊()
-                                {
-                                    Filename = fi.FullName,
-                                    StartTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")
-                                };
-                                lock (傳輸資訊Buffer)
-                                {
-                                    傳輸資訊Buffer.Add(傳輸資訊, fi.FullName);
-                                }
-                                Common.WriteLog($"{fi.FullName}\n");
-                                client.Credentials = new NetworkCredential("test_cs", "1234");
-                                client.UploadFile(Path.Combine(options.Host, fi.Name).Replace("\\", "/"), WebRequestMethods.Ftp.UploadFile, fi.FullName);
-                                lock (傳輸連線數)
-                                    傳輸連線數.Connection -= 1;
-                                傳輸資訊.EndTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
-                            }
-                        }));
-                        t.Start();
                         傳輸連線數.Connection += 1;
                     }
                 });
